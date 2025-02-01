@@ -1,4 +1,3 @@
-
 // Imports
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,24 +12,22 @@ public class FireIncidentSubsystem implements Runnable {
 
     Scheduler scheduler;
     FireIncidentTicket completedTicket;
+
     /**
      * Reads the event file into an ArrayList.
      *
-     * @param filePath Path to the event file.
+     * @param scheduler to be used to communicate with
      */
-
     public FireIncidentSubsystem(Scheduler scheduler) {
         this.scheduler = scheduler;
-
     }
 
-
-
-
+    /**
+     * Run the FireIncidentSubsystem thread, which parses the csv file and creates event tickets.
+     * Send event ticket request to the scheduler and message once the ticket is completed.
+     */
     @Override
     public void run() {
-
-        //readFile("src\\resources\\sample_event_file.csv");
 
         try (Scanner scanner = new Scanner(new File("src\\resources\\sample_event_file.csv"))) {
             if (scanner.hasNextLine()) {
@@ -54,6 +51,5 @@ public class FireIncidentSubsystem implements Runnable {
         } catch (FileNotFoundException e) {
             System.err.println("Event file not found: " + e.getMessage());
         }
-
     }
 }
