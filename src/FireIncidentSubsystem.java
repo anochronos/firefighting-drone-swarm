@@ -34,6 +34,7 @@ public class FireIncidentSubsystem implements Runnable {
                     lineData[3]);
                 eventTickets.add(eventTicket);
             }
+            System.out.println("Fire Incident Subsystem: Finished Parsing CSV event file");
         } catch (FileNotFoundException e) {
             System.err.println("Event file not found: " + e.getMessage());
         }
@@ -48,6 +49,7 @@ public class FireIncidentSubsystem implements Runnable {
 
         for (FireIncidentTicket eventTicket : eventTickets) {
             scheduler.receiveRequest(eventTicket);
+            System.out.println("Fire Incident Subsystem: Sent request to the scheduler");
         }
     }
 }
