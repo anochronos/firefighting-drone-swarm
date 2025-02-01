@@ -2,7 +2,6 @@
 // Imports
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -13,14 +12,27 @@ import java.util.Scanner;
 public class FireIncidentSubsystem implements Runnable {
 
     Scheduler scheduler;
-    private List<FireIncidentTicket> eventTickets;
+    FireIncidentTicket completedTicket;
     /**
      * Reads the event file into an ArrayList.
      *
      * @param filePath Path to the event file.
      */
-    private void readFile(String filePath) {
-        try (Scanner scanner = new Scanner(new File(filePath))) {
+
+    public FireIncidentSubsystem(Scheduler scheduler) {
+        this.scheduler = scheduler;
+
+    }
+
+
+
+
+    @Override
+    public void run() {
+
+        //readFile("src\\resources\\sample_event_file.csv");
+
+        try (Scanner scanner = new Scanner(new File("src\\resources\\sample_event_file.csv"))) {
             if (scanner.hasNextLine()) {
                 scanner.nextLine();
             }
@@ -32,24 +44,16 @@ public class FireIncidentSubsystem implements Runnable {
                     Integer.parseInt(lineData[1]),
                     lineData[2],
                     lineData[3]);
-                eventTickets.add(eventTicket);
+
+                System.out.println("Fire Incident Subsystem: Finished Parsing CSV event file");
+                System.out.println("Fire Incident Subsystem: Sent request to the scheduler");
+                scheduler.receiveRequest(eventTicket);
+                completedTicket = scheduler.completeRequest();
+                System.out.println("Fire Incident Subsystem: Received completed ticket from scheduler\n\n");
             }
-            System.out.println("Fire Incident Subsystem: Finished Parsing CSV event file");
         } catch (FileNotFoundException e) {
             System.err.println("Event file not found: " + e.getMessage());
         }
-    }
 
-
-
-    @Override
-    public void run() {
-
-        readFile("resources\\sample_event_file.csv");
-
-        for (FireIncidentTicket eventTicket : eventTickets) {
-            scheduler.receiveRequest(eventTicket);
-            System.out.println("Fire Incident Subsystem: Sent request to the scheduler");
-        }
     }
 }
