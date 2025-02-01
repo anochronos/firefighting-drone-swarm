@@ -1,33 +1,52 @@
 
-public class Scheduler implements Runnable{
+public class Scheduler{
     private int requestsCompleted = 0;
-    private boolean requestAvailable;
-    private String message;
-    private boolean droneAvailable;
+    private boolean requestAvailable = false;
+    private final String message;
+    private boolean droneAvailable = false;
+    FireIncidentTicket currentTicket;
+    FireIncidentTicket completedTicket;
 
 
     public Scheduler() {
         this.message = "Fly to fire";
     }
-
+    
+    public String getMessage(){
+        return message;
+    }
+    
     public int getRequestsCompleted() {
         return requestsCompleted;
     }
 
+    public synchronized void receiveRequest(FireIncidentTicket request) { // fire system
+        while (requestAvailable) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+        currentTicket = request;
+        System.out.println("Scheduler: Received request from the fire incident system");
+        requestAvailable = true;
+        notifyAll();
+    }
 
-    public synchronized void sendMessage(String message) { // drone
-        while (!droneAvailable) {
+    public synchronized FireIncidentTicket sendMessage() { // drone
+        while (!requestAvailable) {
             try {
                 wait();
             } catch (InterruptedException e) {
             }
         }
         System.out.println("Scheduler: Sent message '" + message +"' to available drone");
-        droneAvailable = false;
+        requestAvailable = false;
         notifyAll();
+        return currentTicket;
     }
 
-    public synchronized void receiveMessage(String message) { // drone
+    public synchronized void receiveMessage(FireIncidentTicket eventTicket) { // drone
         while (droneAvailable) {
             try {
                 wait();
@@ -35,28 +54,28 @@ public class Scheduler implements Runnable{
 
             }
         }
-        System.out.println("Scheduler: Received message '" + message +"' from drone");
+        completedTicket = eventTicket;
+        System.out.println("Scheduler: Received response from drone");
         droneAvailable = true;
-        requestAvailable = true;
-        requestsCompleted++;
+        
         notifyAll();
     }
 
-    public synchronized void receiveRequest(FireIncidentTicket request) { // fire system
-        while (!requestAvailable) {
+    public synchronized FireIncidentTicket completeRequest() {
+        while (!droneAvailable) {
             try {
                 wait();
             } catch (InterruptedException e) {
+
             }
         }
-        System.out.println("Scheduler: Received request from the fire incident system");
-        sendMessage(message);
+        droneAvailable = false;
+        System.out.println("Scheduler: Sending completed ticket to fire system");
+        requestsCompleted++;
         notifyAll();
+        return completedTicket;
     }
+
+
     
-    @Override
-    public void run() {
-
-    }
-
 }
