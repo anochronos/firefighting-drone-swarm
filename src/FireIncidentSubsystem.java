@@ -47,8 +47,8 @@ public class FireIncidentSubsystem implements Runnable {
 
                 System.out.println("Fire Incident Subsystem: Finished Parsing CSV event file");
                 System.out.println("Fire Incident Subsystem: Sent request to the scheduler");
-                scheduler.receiveRequest(eventTicket);
-                completedTicket = scheduler.completeRequest();
+                scheduler.receiveRequestFromFiresystem(eventTicket);
+                completedTicket = scheduler.completeFiresystemRequest();
                 System.out.println("Fire Incident Subsystem: Received completed ticket from scheduler\n\n");
             }
         } catch (FileNotFoundException e) {

@@ -20,7 +20,7 @@ public class Scheduler{
         return requestsCompleted;
     }
 
-    public synchronized void receiveRequest(FireIncidentTicket request) { // fire system
+    public synchronized void receiveRequestFromFiresystem(FireIncidentTicket request) { // fire system
         while (requestAvailable) {
             try {
                 wait();
@@ -33,7 +33,7 @@ public class Scheduler{
         notifyAll();
     }
 
-    public synchronized FireIncidentTicket sendMessage() { // drone
+    public synchronized FireIncidentTicket sendMessageToDrone() { // drone
         while (!requestAvailable) {
             try {
                 wait();
@@ -46,7 +46,7 @@ public class Scheduler{
         return currentTicket;
     }
 
-    public synchronized void receiveMessage(FireIncidentTicket eventTicket) { // drone
+    public synchronized void receiveMessageToDrone(FireIncidentTicket eventTicket) { // drone
         while (droneAvailable) {
             try {
                 wait();
@@ -61,7 +61,7 @@ public class Scheduler{
         notifyAll();
     }
 
-    public synchronized FireIncidentTicket completeRequest() {
+    public synchronized FireIncidentTicket completeFiresystemRequest() {
         while (!droneAvailable) {
             try {
                 wait();
