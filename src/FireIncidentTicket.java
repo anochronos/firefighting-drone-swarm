@@ -1,5 +1,5 @@
 
-public record FireIncidentTicket(String timeStamp, String zoneID, String eventType, String severity){
+public record FireIncidentTicket(String timeStamp, int zoneID, String eventType, String severity){
     @Override
     public String toString(){
         return "FireIncidentTicket [timeStamp="+timeStamp+", " +
