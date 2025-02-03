@@ -29,7 +29,7 @@ public class DroneSubsystem implements Runnable{
                 System.out.println("Drone: Received Task");
                 Thread.sleep(1000);
                 System.err.println("Drone: Completed Task");
-                scheduler.receiveMessageToDrone(eventTicket);
+                scheduler.receiveMessageFromDrone(eventTicket);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

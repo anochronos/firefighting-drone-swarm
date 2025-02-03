@@ -83,7 +83,7 @@ public class Scheduler{
      *
      * @param eventTicket The completed fire incident ticket from the drone.
      */
-    public synchronized void receiveMessageToDrone(FireIncidentTicket eventTicket) { // drone
+    public synchronized void receiveMessageFromDrone(FireIncidentTicket eventTicket) { // drone
         while (droneAvailable) {
             try {
                 wait();

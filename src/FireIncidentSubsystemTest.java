@@ -35,7 +35,7 @@ public class FireIncidentSubsystemTest {
         FireIncidentTicket receivedTicket = scheduler.sendMessageToDrone();
         assertEquals(ticket, receivedTicket);
 
-        scheduler.receiveMessageToDrone(ticket);
+        scheduler.receiveMessageFromDrone(ticket);
         FireIncidentTicket completedTicket = scheduler.completeFiresystemRequest();
         assertEquals(ticket, completedTicket);
         assertEquals(1, scheduler.getRequestsCompleted());
@@ -49,13 +49,13 @@ public class FireIncidentSubsystemTest {
         scheduler.receiveRequestFromFiresystem(ticket1);
 
         FireIncidentTicket processed1 = scheduler.sendMessageToDrone();
-        scheduler.receiveMessageToDrone(processed1);
+        scheduler.receiveMessageFromDrone(processed1);
         scheduler.completeFiresystemRequest();
 
         scheduler.receiveRequestFromFiresystem(ticket2);
 
         FireIncidentTicket processed2 = scheduler.sendMessageToDrone();
-        scheduler.receiveMessageToDrone(processed2);
+        scheduler.receiveMessageFromDrone(processed2);
         scheduler.completeFiresystemRequest();
 
         assertEquals(3, scheduler.getRequestsCompleted());
