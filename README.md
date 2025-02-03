@@ -29,7 +29,7 @@ The following is a breakdown of the Firefighting Drone Swarm project.
 
 To run the program, open the project on IntelliJ IDEA and run `Main.java` from the `src` folder.
 
-To run the tests for the project, run the `FireIncidentSubsystemTest.java`.
+To run the tests for the project, ensure that JUnit 5.8.1 is installed in the dependencies and run the `FireIncidentSubsystemTest.java`.
 
 >Note: the program does not automatically end, to end it press the stop button or type Ctrl+F2.
 
