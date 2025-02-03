@@ -1,18 +1,41 @@
-## Getting Started
-
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to the Firefighting Drone Swarm project, Iteration 1.
 
 ## Folder Structure
 
-The workspace contains two folders by default, where:
+The workspace contains:
 
 - `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- `.idea`: the folder to maintain dependencies
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+Meanwhile, the compiled output files will be generated in the `out` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Project Files
 
-## Dependency Management
+The following is a breakdown of the Firefighting Drone Swarm project.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+### System Logic
+- Scheduler.java
+- DroneSubsystem.java
+- FireIncidentTicket.java
+- FireIncidentSubsystem.java
+
+### Runnable
+- Main.java
+
+### Test(s)
+- FireIncidentSubsystemTest.java
+
+## Setup Instructions
+
+To run the program, open the project on IntelliJ IDEA and run `Main.java` from the `src` folder.
+
+To run the tests for the project, run the `FireIncidentSubsystemTest.java`.
+
+>Note: the program does not automatically end, to end it press the stop button or type Ctrl+F2.
+
+## Contributions
+
+- FireIncidentSubsystem/Ticket - Abduallah
+- DroneSubsystem, Test cases - Adam
+- Scheduler - Akshun, Simon
+- Parsing, UML class and sequence diagrams - Jared
