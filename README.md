@@ -35,7 +35,7 @@ To run the tests for the project, ensure that JUnit 5.8.1 is installed in the de
 
 ## Contributions
 
-- FireIncidentSubsystem/Ticket - Abduallah
+- FireIncidentSubsystem/Ticket and UML diagrams - Abduallah
 - DroneSubsystem, Test cases - Adam
 - Scheduler - Akshun, Simon
-- Parsing, UML class and sequence diagrams - Jared
+- FireIncidentSubsystem/Ticket and Sequence diagrams - Jared
