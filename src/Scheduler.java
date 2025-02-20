@@ -11,12 +11,14 @@ public class Scheduler{
     private boolean droneAvailable = false;
     FireIncidentTicket currentTicket;
     FireIncidentTicket completedTicket;
+    private final DroneSubsystem droneSubsystem;
 
     /**
      * Constructor for scheduler class
      */
     public Scheduler() {
-        this.message = "Fly to fire";
+        droneSubsystem = new DroneSubsystem(this);
+        message = "FLY TO FIRE";
     }
 
     /**
@@ -43,7 +45,7 @@ public class Scheduler{
      *
      * @param request The fire incident ticket to be processed.
      */
-    public synchronized void receiveRequestFromFiresystem(FireIncidentTicket request) { // fire system
+    public synchronized void receiveRequestFromFiresystem(FireIncidentTicket request) {
         while (requestAvailable) {
             try {
                 wait();
@@ -63,7 +65,7 @@ public class Scheduler{
      *
      * @return The fire incident ticket assigned to the drone.
      */
-    public synchronized FireIncidentTicket sendMessageToDrone() { // drone
+    public synchronized FireIncidentTicket sendMessageToDrone() {
         while (!requestAvailable) {
             try {
                 wait();
@@ -71,7 +73,12 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println("Scheduler: Sent message '" + message +"' to available drone");
+        Drone chosenDrone = chooseDrone();
+        if (chosenDrone == null) {
+            System.out.println("Scheduler: Error could not find a drone");
+            System.exit(0);
+        }
+        System.out.println("Scheduler: Sent message '" + message +"' to DroneSubsystem");
         requestAvailable = false;
         notifyAll();
         return currentTicket;
@@ -118,6 +125,54 @@ public class Scheduler{
         requestsCompleted++;
         notifyAll();
         return completedTicket;
+    }
+
+    /**
+     * Chooses an available drone based on priority order.
+     * 1. Check for drones not in idle state.
+     *    1.1 Prioritize drones returning to base (thus they can go immediately)
+     *    1.2 If none, look for drone in DroppingAgent State
+     *    1.3 If a drone is chosen, check water level and battery.
+     * 2. Check for an idle drone (if no active drones found).
+     *
+     * @return The chosen drone or null if no suitable drone is found.
+     */
+    public Drone chooseDrone() {
+        Drone selectedDrone = null;
+
+        // 1. Check for active drones returning to base
+        for (Drone drone : droneSubsystem.getDrones().values()) {
+            if (drone.getState() instanceof ReturningToBaseState && drone.getWaterTanklvl() > 0 && drone.getBattery() > 0) {
+                selectedDrone = drone;
+                break;
+            }
+        }
+
+        // 2. If no active drone found, check for an idle drone
+        if (selectedDrone == null) {
+            for (Drone drone : droneSubsystem.getDrones().values()) {
+                if (drone.getState() instanceof IdleState) {
+                    selectedDrone = drone;
+                    break;
+                }
+            }
+        }
+
+        // 3. Choose any remaining
+        if (selectedDrone == null) {
+            for (Drone drone : droneSubsystem.getDrones().values()) {
+                selectedDrone = drone;
+                break;
+            }
+        }
+
+        if (selectedDrone == null) {
+            System.out.println("Scheduler: No available drone found.");
+            return null;
+        } else {
+            System.out.println("Scheduler: Assigning Drone " + selectedDrone.getDroneID() + " to fire incident.");
+            droneSubsystem.scheduleFlight(selectedDrone.getDroneID(), 10, 10); }
+        return selectedDrone;
     }
     
 }

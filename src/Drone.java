@@ -4,20 +4,27 @@ import java.util.Map;
 public class Drone {
     private int droneID;
     private DroneStates currentState;
-    private double battery;
+    private int battery;
     private double waterTanklvl;
-    private double destination_X;  // eg fire zone center X
-    private double destination_Y;  // fire zone center Y
+    private double destination_X;  // x coordinate where the drone is headed
+    private double destination_Y;  // y coordinate where the drone is headed
     private double current_X;
     private double current_Y;
 
-    public Drone(int droneID, double battery, double waterTanklvl) {
+    /**
+     * Initialize a new drone with x and y coordinates at 0.0
+     * and set its initial state to IdleState
+     * @param droneID unique to each drone
+     * @param battery percentage
+     * @param waterTanklvl in terms of litres
+     */
+    public Drone(int droneID, int battery, double waterTanklvl) {
         this.droneID = droneID;
         this.battery = battery;
         this.waterTanklvl = waterTanklvl;
-        this.currentState = new IdleState();// Initial state
+        this.currentState = new IdleState();
         current_X = 0.0;
-        current_Y =0.0;
+        current_Y = 0.0;
     }
 
 
@@ -46,19 +53,19 @@ public class Drone {
     }
 
     public void checkForStateTransition(DroneSubsystem droneSubsystem) {
-        boolean faultDetected = Math.random() < 0.1; // Simulated 10% fault probability
+        /**boolean faultDetected = Math.random() < 0.1; // Simulated 10% fault probability
 
         if (faultDetected) {
             System.out.println("Drone " + droneID + " detected a fault! Transitioning to FaultDetectedState...");
             this.setState(new FaultDetectedState());
             currentState.faultDetected(droneSubsystem, this, "ENGINE_FAILURE");
             return;
-        }
+        }**/
 
         if (currentState instanceof EnRouteState) {
             // Check if the drone is near the destination
-            if (Math.abs(getCurrent_X() - getDestination_X()) < 5 &&
-                    Math.abs(getCurrent_Y() - getDestination_Y()) < 5) {
+            if (getCurrent_X() > getDestination_X()*0.8 &&
+                    getCurrent_Y() > getDestination_Y()*0.8) {
                 this.setState(new ApproachingDestinationState());
                 reachedNearDestination(droneSubsystem);
             }
@@ -90,12 +97,8 @@ public class Drone {
         currentState.reachedNearDestination(droneSubsystem, this);
     }
 
-
-
-
     public void beginAgentDropPreparation(DroneSubsystem droneSubsystem) {
         currentState.prepareForAgentRelease(droneSubsystem, this);
-
     }
 
     public void nozzleOpened(DroneSubsystem droneSubsystem) {
@@ -124,14 +127,14 @@ public class Drone {
 
 
     public int getDroneID() { return droneID; }
-    public double getBattery() { return battery; }
+    public int getBattery() { return battery; }
     public double getWaterTanklvl() { return waterTanklvl; }
 
 
-    public void setBattery(double battery) { this.battery = battery; }
+    public void setBattery(int battery) { this.battery = battery; }
     public void setWaterTanklvl(double waterTanklvl) { this.waterTanklvl = waterTanklvl; }
-    public DroneStates getState() {
-        return currentState; }
+
+    public DroneStates getState() { return currentState; }
 
     public Map.Entry<Integer, Integer> getCoordinates() {
         return new AbstractMap.SimpleEntry<>((int) destination_X, (int) destination_Y);
@@ -140,12 +143,6 @@ public class Drone {
     public Map.Entry<Integer, Integer> getCurrentLocation() {
         return new AbstractMap.SimpleEntry<>((int) current_X, (int) current_Y);
     }
-
-    public void setDroneID(int droneID) {
-        this.droneID = droneID;
-    }
-
-
 
     public double getDestination_X() {
         return destination_X;

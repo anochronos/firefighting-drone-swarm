@@ -1,6 +1,7 @@
 // Imports
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -22,12 +23,37 @@ public class FireIncidentSubsystem implements Runnable {
         this.scheduler = scheduler;
     }
 
+    private static Map.Entry<Integer, Integer> parseCoordinates(String coordinate) {
+        coordinate = coordinate.replace("(", "").replace(")", "");
+        String[] coords = coordinate.split(";");
+        return Map.entry(Integer.parseInt(coords[0].trim()), Integer.parseInt(coords[1].trim()));
+    }
+
     /**
      * Run the FireIncidentSubsystem thread, which parses the csv file and creates event tickets.
      * Send event ticket request to the scheduler and message once the ticket is completed.
      */
     @Override
     public void run() {
+
+        try (Scanner scanner = new Scanner(new File("src\\resources\\sample_zone_file.csv"))) {
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] lineData = line.split(",");
+                Zone fireZone = new Zone(
+                        Integer.parseInt(lineData[0]),
+                        parseCoordinates(lineData[1].trim()),
+                        parseCoordinates(lineData[2].trim()));
+
+                System.out.println("Initialised a Zone --> " + fireZone);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Zone file not found: " + e.getMessage());
+        }
+        System.out.println("Fire Incident Subsystem: Finished Parsing CSV zone file\n");
 
         try (Scanner scanner = new Scanner(new File("src\\resources\\sample_event_file.csv"))) {
             if (scanner.hasNextLine()) {
@@ -51,5 +77,6 @@ public class FireIncidentSubsystem implements Runnable {
         } catch (FileNotFoundException e) {
             System.err.println("Event file not found: " + e.getMessage());
         }
+        System.exit(0);
     }
 }

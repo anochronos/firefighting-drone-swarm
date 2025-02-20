@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Drones will make calls to the Scheduler which will then reply when there is work to
@@ -9,7 +8,7 @@ import java.util.Map;
 
 public class DroneSubsystem implements Runnable{
     private Scheduler scheduler;
-    private Map<Integer, Drone> drones;
+    private final HashMap<Integer, Drone> drones;
     private static DroneSubsystem droneSubsystemInstance;
 
     /**
@@ -20,21 +19,12 @@ public class DroneSubsystem implements Runnable{
     public DroneSubsystem(Scheduler scheduler) {
         this.scheduler = scheduler;
         drones = new HashMap<>();
-    }
-
-    //singleton to make sure a dronsubsystem with scheduler is used or created once.
-    public static synchronized DroneSubsystem getInstance(Scheduler scheduler){
-        if (droneSubsystemInstance == null){
-            droneSubsystemInstance = new DroneSubsystem(scheduler);
-        }
-        return droneSubsystemInstance;
+        Drone drone1 = new Drone(1, 100, 5.0);
+        this.addDrone(drone1);
     }
 
     public void addDrone(Drone drone){
         drones.put(drone.getDroneID(), drone);
-    }
-    public Drone getDrone(int droneID){
-        return drones.get(droneID);
     }
 
     public void scheduleFlight(int droneId, double x, double y) {
@@ -57,6 +47,9 @@ public class DroneSubsystem implements Runnable{
         return null;
     }
 
+    public HashMap<Integer, Drone> getDrones() {
+        return drones;
+    }
 
     public void reachedNearDestination(int droneId) {
         Drone drone = drones.get(droneId);
@@ -114,31 +107,16 @@ public class DroneSubsystem implements Runnable{
         }
     }
 
-
-
-
     /**
      * Runs the drone thread, which receives fire incident tickets from the scheduler
      * and sends a message back once the task has been completed.
      */
-
     @Override
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 FireIncidentTicket eventTicket = scheduler.sendMessageToDrone();
                 System.out.println("DroneSubsystem: Received Task from Scheduler");
-
-                // Assign task to an available drone
-                Drone assignedDrone = getAvailableDrone();
-                if (assignedDrone != null) {
-                    System.out.println("Assigning Drone " + assignedDrone.getDroneID() + " to fire incident.");
-                    scheduleFlight(assignedDrone.getDroneID(),
-                            eventTicket.getX(), eventTicket.getY());
-                } else {
-                    System.out.println("No available drones. Task delayed.");
-                }
-
                 Thread.sleep(1000);
                 System.out.println("DroneSubsystem: Task Completed");
                 scheduler.receiveMessageFromDrone(eventTicket);
