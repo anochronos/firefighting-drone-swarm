@@ -21,39 +21,23 @@ public class OpeningNozzleState implements DroneStates{
 
     @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
-        System.out.println("Drone " + drone.getDroneID() + ", is preparing for opening nozzel/agent release.\n");
-        droneSubsystem.nozzleOpened(drone.getDroneID());
-
-
-    }
-
-    @Override
-    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {
-        System.out.println("Nozzle opening for Drone: " + drone.getDroneID() + "...");
-
-        // Simulate opening delay
+        System.out.println("\nDrone " + drone.getDroneID() + ", is preparing to release agent.");
         try {
             System.out.println("Opening nozzle...........\n");
             Thread.sleep(1000); // simulation time to open nozzle
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        droneSubsystem.nozzleOpened(drone.getDroneID());
+    }
 
-        // Simulate  10% chance of failure
-        boolean nozzleStuck = Math.random() < 0.1;
-        if (nozzleStuck) {
-            System.out.println("Nozzle stuck for Drone: " + drone.getDroneID() + "! Transitioning to FaultDetectedState...");
-            drone.setState(new FaultDetectedState());
-            drone.getState().faultDetected(droneSubsystem, drone, "NOZZLE_STUCK");
-            return;
-        }
-
-        // No fault detected, transition to the next state
+    @Override
+    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {
         System.out.println("Nozzle successfully opened for Drone: " + drone.getDroneID());
         drone.setState(new DroppingAgentState());
         droneSubsystem.dispensingAgent(drone.getDroneID());
         //ask scheduler if the fire is extinguished, i.e the ground sensor might have informed the scheduler
-        //if so we have to change our state to closeingNozzelState.
+        //if so we have to change our state to closingNozzleState.
         //droneSubsystem.RequestStateChange(droneSubsystem, drone);
 
     }

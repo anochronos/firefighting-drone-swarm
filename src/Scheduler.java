@@ -1,3 +1,5 @@
+import java.util.Map;
+
 /**
  * The Scheduler class coordinates communication between the Fire Incident System and the Drone System.
  * It manages fire incident requests, sends messages to drones, and receives responses from drones.
@@ -53,6 +55,7 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
+        System.out.println("Scheduler in State 'Receiving Request from FireIncidentSubsystem'");
         currentTicket = request;
         System.out.println("Scheduler: Received request from the fire incident system");
         requestAvailable = true;
@@ -73,12 +76,13 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
-        Drone chosenDrone = chooseDrone();
+        System.out.println("Scheduler in State 'Sending Message to DroneSubsystem'");
+        System.out.println("\nScheduler: Sending message '" + message +"' to DroneSubsystem");
+        Drone chosenDrone = chooseDrone(Map.entry(20,20));
         if (chosenDrone == null) {
             System.out.println("Scheduler: Error could not find a drone");
             System.exit(0);
         }
-        System.out.println("Scheduler: Sent message '" + message +"' to DroneSubsystem");
         requestAvailable = false;
         notifyAll();
         return currentTicket;
@@ -98,6 +102,7 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
+        System.out.println("Scheduler in State 'Receiving Message from DroneSubsystem'");
         completedTicket = eventTicket;
         System.out.println("Scheduler: Received response from drone");
         droneAvailable = true;
@@ -120,6 +125,7 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
+        System.out.println("Scheduler in State 'Sending Message to FireIncidentSubsystem'");
         droneAvailable = false;
         System.out.println("Scheduler: Sending completed ticket to fire system");
         requestsCompleted++;
@@ -131,47 +137,73 @@ public class Scheduler{
      * Chooses an available drone based on priority order.
      * 1. Check for drones not in idle state.
      *    1.1 Prioritize drones returning to base (thus they can go immediately)
-     *    1.2 If none, look for drone in DroppingAgent State
+     *    1.2 If none, look for drone in DroppingAgent or ClosingNozzle State
      *    1.3 If a drone is chosen, check water level and battery.
      * 2. Check for an idle drone (if no active drones found).
+     * 3. Choose any remaining drone
      *
      * @return The chosen drone or null if no suitable drone is found.
      */
-    public Drone chooseDrone() {
-       Drone selectedDrone;
+    public Drone chooseDrone(Map.Entry<Integer, Integer> fireCoordinates) {
+       Drone selectedDrone = null;
 
-        selectedDrone = droneSubsystem.getAvailableDrone();
-
-        // 1. Check for active drones returning to base
-        if (selectedDrone == null) {
+        // 1. Check for active drones
         for (Drone drone : droneSubsystem.getDrones().values()) {
-            if (drone.getState() instanceof ReturningToBaseState && drone.getWaterTanklvl() > 0 && drone.getBattery() > 0) {
+            if (drone.getState() instanceof ReturningToBaseState && drone.getWaterTanklvl() > 0 && drone.getBattery() > 50) {
                 selectedDrone = drone;
                 break;
             }
         }
+
+        for (Drone drone : droneSubsystem.getDrones().values()) {
+            if ((drone.getState() instanceof DroppingAgentState || drone.getState() instanceof ClosingNozzleState) && drone.getWaterTanklvl() > 0 && drone.getBattery() > 50) {
+                selectedDrone = drone;
+                break;
+            }
         }
 
         // 2. If no active drone found, check for an idle drone
-
+        if (selectedDrone == null) {
+            selectedDrone = droneSubsystem.getAvailableDrone();
+        }
 
         // 3. Choose any remaining
-//        if (selectedDrone == null) {
-//            for (Drone drone : droneSubsystem.getDrones().values()) {
-//                selectedDrone = drone;
-//                break;
-//            }
-//        }
+        if (selectedDrone == null) {
+            for (Drone drone : droneSubsystem.getDrones().values()) {
+                selectedDrone = drone;
+                break;
+            }
+        }
 
         if (selectedDrone == null) {
             System.out.println("Scheduler: No available drone found.");
-            //add drone to the hashmap in dronesubsystem
             return null;
         } else {
             System.out.println("Scheduler: Assigning Drone " + selectedDrone.getDroneID() + " to fire incident.");
             //This should be called inside AssignTaskState of scheduler
-            droneSubsystem.scheduleFlight(selectedDrone.getDroneID(), 10, 10); }
+            Map.Entry<Integer, Integer> coordinates = validateCoordinates(fireCoordinates);
+            droneSubsystem.scheduleFlight(selectedDrone.getDroneID(), coordinates.getKey(), coordinates.getValue()); }
         return selectedDrone;
+    }
+
+    /**
+     * Ensures that coordinates are not of negative value
+     * @param coordinates of the fire to be handled
+     * @return coordinates of the fire
+     */
+    private Map.Entry<Integer, Integer> validateCoordinates(Map.Entry<Integer, Integer> coordinates) {
+        int x = coordinates.getKey();
+        int y = coordinates.getValue();
+
+        if (coordinates.getKey() < 0) {
+            System.out.println("Scheduler: Negative X coordinates received. Converting to positive");
+            x = Math.abs(coordinates.getKey());
+        }
+        if (coordinates.getValue() < 0) {
+            System.out.println("Scheduler: Negative Y coordinates received. Converting to positive");
+            y = Math.abs(coordinates.getKey());
+        }
+        return Map.entry(x, y);
     }
     
 }

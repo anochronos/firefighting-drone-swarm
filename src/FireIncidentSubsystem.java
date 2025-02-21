@@ -1,6 +1,7 @@
 // Imports
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -13,6 +14,7 @@ public class FireIncidentSubsystem implements Runnable {
 
     Scheduler scheduler;
     FireIncidentTicket completedTicket;
+    HashMap<Integer, Zone> zones = new HashMap<>();
 
     /**
      * Reads the event file into an ArrayList.
@@ -40,6 +42,7 @@ public class FireIncidentSubsystem implements Runnable {
             if (scanner.hasNextLine()) {
                 scanner.nextLine();
             }
+            int zoneId = 1;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] lineData = line.split(",");
@@ -48,6 +51,7 @@ public class FireIncidentSubsystem implements Runnable {
                         parseCoordinates(lineData[1].trim()),
                         parseCoordinates(lineData[2].trim()));
 
+                zones.put(zoneId, fireZone); zoneId++;
                 System.out.println("Initialised a Zone --> " + fireZone);
             }
         } catch (FileNotFoundException e) {

@@ -47,13 +47,13 @@ public class ClosingNozzleState implements DroneStates{
         }
 
         // Simulating  nozzle jam 1% prob
-        boolean nozzleJam = Math.random() < 0.01;
+        /**boolean nozzleJam = Math.random() < 0.01;
         if (nozzleJam) {
             System.out.println("Nozzle jammed while closing on Drone " + drone.getDroneID() + "! Transitioning to FaultDetectedState...");
             drone.setState(new FaultDetectedState());
             drone.faultDetected(droneSubsystem, "NOZZLE_JAM");
             return;
-        }
+        }**/
 
         //closed
         System.out.println("Nozzle successfully closed for Drone " + drone.getDroneID());

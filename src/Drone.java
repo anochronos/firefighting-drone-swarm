@@ -66,9 +66,8 @@ public class Drone {
             // Check if the drone is near the destination
             if (getCurrent_X() > getDestination_X()*0.8 &&
                     getCurrent_Y() > getDestination_Y()*0.8) {
-                droneSubsystem.RequestStateChange(droneSubsystem, this);
+                //droneSubsystem.RequestStateChange(droneSubsystem, this);
                 //since the scheduler has already set our state to ApproachingDestinationState
-                //this.setState(new ApproachingDestinationState());
                 reachedNearDestination(droneSubsystem);
             }
         }
@@ -77,7 +76,6 @@ public class Drone {
             // Check if the drone has fully reached its destination
             if (Math.abs(getCurrent_X() - getDestination_X()) < 1 &&
                     Math.abs(getCurrent_Y() - getDestination_Y()) < 1) {
-                //System.out.println("Drone " + droneID + " has arrived at the exact destination.");
                 reachedDestination(droneSubsystem);
             }
         }
@@ -95,24 +93,30 @@ public class Drone {
 
 
     public void reachedNearDestination(DroneSubsystem droneSubsystem) {
-        System.out.println("Drone " + droneID + " has reached near its destination.");
+        System.out.println("Drone " + droneID + " is nearing its destination.");
+        this.setState(new ApproachingDestinationState());
         currentState.realTimeUpdateOfDroneLocation(droneSubsystem, this);
         //currentState.reachedNearDestination(droneSubsystem, this);
     }
 
     public void reachedDestination(DroneSubsystem droneSubsystem){
-        System.out.println("Drone " + droneID + " has reached  its destination.");
+        // At this point state is ApproachingDestinationState
         currentState.reachedDestination(droneSubsystem, this);
     }
+
     public void beginAgentDropPreparation(DroneSubsystem droneSubsystem) {
+        // At this point state is ApproachingDestinationState
+        this.setState(new OpeningNozzleState());
         currentState.prepareForAgentRelease(droneSubsystem, this);
     }
 
     public void nozzleOpened(DroneSubsystem droneSubsystem) {
+        // At this point state is OpeningNozzleState
         currentState.nozzleOpened(droneSubsystem, this);
     }
 
     public void startingAgentDispensing(DroneSubsystem droneSubsystem) {
+        // At this point state is DroppingAgentState
         currentState.droppingAgent(droneSubsystem, this);
     }
 

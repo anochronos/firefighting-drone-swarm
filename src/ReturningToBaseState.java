@@ -60,29 +60,28 @@ public class ReturningToBaseState implements DroneStates{
             double newCurrentY = drone.getCurrent_Y() + stepSize * Math.signum(0.0 - drone.getCurrent_Y());
 
             drone.setCurrentLocation(newCurrentX, newCurrentY);
-            System.out.println("Drone " + drone.getDroneID() + " en route to base at (" + newCurrentX + ", " + newCurrentY + ")");
-
-            //we could add fault, but since wer returning to base and for simplicity i didnt include it.
+            System.out.println("Drone " + drone.getDroneID() + " en route to base is now at (" + newCurrentX + ", " + newCurrentY + ")");
 
             try {
-                Thread.sleep(400); //diplaydelay
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
             }
         }
 
-        //arrived at the base
         drone.arrivedAtBase(droneSubsystem);
-
     }
 
 
     @Override
     public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {
+        // Show proof of battery usage
+        System.out.println("Drone " + drone.getDroneID() + " before recharging: "  + drone.getBattery());
         System.out.println("Drone " + drone.getDroneID() + " has arrived at the base.");
-        //for simplicity, automatically set to idle
-        //we have to reset the drones fields.
+        System.out.println("Drone " + drone.getDroneID() + " refilled water tank and recharged battery.");
+        drone.setBattery(100);
+        drone.setWaterTanklvl(10.0);
         drone.setState(new IdleState());
 
     }

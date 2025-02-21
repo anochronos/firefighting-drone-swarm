@@ -9,12 +9,13 @@ public class ApproachingDestinationState implements DroneStates{
         System.out.println("Drone " + drone.getDroneID() + " is in final approach to " + drone.getDestination_X() + ", " + drone.getDestination_Y());
 
         double stepSize = 0.5; // Slower movement for precision landing
+        double newCurrentX, newCurrentY;
 
         while (Math.abs(drone.getCurrent_X() - drone.getDestination_X()) > stepSize ||
                 Math.abs(drone.getCurrent_Y() - drone.getDestination_Y()) > stepSize) {
 
-            double newCurrentX = drone.getCurrent_X() + stepSize;
-            double newCurrentY = drone.getCurrent_Y() + stepSize;
+            newCurrentX = drone.getCurrent_X() + stepSize;
+            newCurrentY = drone.getCurrent_Y() + stepSize;
 
             if (Math.abs(newCurrentX - drone.getDestination_X()) < stepSize) {
                 newCurrentX = drone.getDestination_X();
@@ -23,6 +24,7 @@ public class ApproachingDestinationState implements DroneStates{
                 newCurrentY = drone.getDestination_Y();
             }
 
+            drone.setBattery(drone.getBattery() - 1);
             drone.setCurrentLocation(newCurrentX, newCurrentY);
             System.out.println("Drone " + drone.getDroneID() + " is  currently at (" + newCurrentX + ", " + newCurrentY + ")");
 
@@ -40,8 +42,6 @@ public class ApproachingDestinationState implements DroneStates{
 
     @Override
     public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {
-        //System.out.println("Drone " + drone.getDroneID() + " has fully reached the destination.");
-
         // Transition to the next state (OpeningNozzleState)
         //drone.setState(new OpeningNozzleState());
         //drone.checkForStateTransition(droneSubsystem);
@@ -49,12 +49,10 @@ public class ApproachingDestinationState implements DroneStates{
 
     @Override
     public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
-        System.out.println("Drone " + drone.getDroneID() + " has fully reached the destination.");
         //request transition to next state from scheduler.
-        droneSubsystem.RequestStateChange(droneSubsystem, drone);
+        //droneSubsystem.RequestStateChange(droneSubsystem, drone);
+        System.out.println("Drone " + drone.getDroneID() + " has reached its destination.");
         droneSubsystem.beginAgentDropPreparation(drone.getDroneID());
-
-
     }
 
 

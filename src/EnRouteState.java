@@ -7,33 +7,33 @@ public class EnRouteState implements DroneStates {
 
     @Override
     public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {
-        System.out.println("Drone " + drone.getDroneID() + " is currently at " + drone.getCurrentLocation());
-
-        double stepSize = 1.0; // Adjust for smoother movement
+        double stepSize = 2.0; // Adjust for smoother movement
         double totalDistanceX = drone.getDestination_X() - drone.getCurrent_X();
         double totalDistanceY = drone.getDestination_Y() - drone.getCurrent_Y();
+        double newCurrentX, newCurrentY;
 
         double distanceMagnitude = Math.sqrt(totalDistanceX * totalDistanceX + totalDistanceY * totalDistanceY);
         double stepX = (totalDistanceX / distanceMagnitude) * stepSize;
         double stepY = (totalDistanceY / distanceMagnitude) * stepSize;
 
-        while (Math.abs(drone.getCurrent_X() - drone.getDestination_X()) > stepSize ||
-                Math.abs(drone.getCurrent_Y() - drone.getDestination_Y()) > stepSize) {
+        while (Math.abs(drone.getCurrent_X() - drone.getDestination_X()) > 4 ||
+                Math.abs(drone.getCurrent_Y() - drone.getDestination_Y()) > 4) {
 
-            double newCurrentX = drone.getCurrent_X() + stepX;
-            double newCurrentY = drone.getCurrent_Y() + stepY;
+            newCurrentX = drone.getCurrent_X() + stepX;
+            newCurrentY = drone.getCurrent_Y() + stepY;
 
-            if (Math.abs(newCurrentX - drone.getDestination_X()) < stepSize) {
+            if (Math.abs(newCurrentX - drone.getDestination_X()) < 4) {
                 newCurrentX = drone.getDestination_X();
             }
-            if (Math.abs(newCurrentY - drone.getDestination_Y()) < stepSize) {
+            if (Math.abs(newCurrentY - drone.getDestination_Y()) < 4) {
                 newCurrentY = drone.getDestination_Y();
             }
 
+            drone.setBattery(drone.getBattery() - 2);
             drone.setCurrentLocation(newCurrentX, newCurrentY);
             System.out.println("Drone " + drone.getDroneID() + " is now at (" + newCurrentX + ", " + newCurrentY + ")");
 
-            // Let Drone decide the next state, either reaching near destination or faultdeDetected state)
+            // Let Drone decide the next state, either reaching near destination or fault Detected state)
             drone.checkForStateTransition(droneSubsystem);
 
             try {

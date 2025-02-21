@@ -19,7 +19,7 @@ public class DroneSubsystem implements Runnable{
     public DroneSubsystem(Scheduler scheduler) {
         this.scheduler = scheduler;
         drones = new HashMap<>();
-        Drone drone1 = new Drone(1, 100, 5.0);
+        Drone drone1 = new Drone(1, 100, 10.0);
         this.addDrone(drone1);
     }
 

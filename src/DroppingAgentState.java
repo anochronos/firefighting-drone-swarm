@@ -44,18 +44,17 @@ public class DroppingAgentState implements DroneStates{
             drone.setWaterTanklvl(waterLevel);
 
             //Check for faults
-            boolean pumpFailure = Math.random() < 0.01;
+            /**boolean pumpFailure = Math.random() < 0.01;
             if (pumpFailure) {
                 System.out.println("Drone " + drone.getDroneID() + " encountered a failure! Transitioning to FaultDetectedState...");
                 drone.setState(new FaultDetectedState());
                 drone.getState().faultDetected(droneSubsystem, drone, "PUMP_FAILURE");
                 return;
-            }
+            }**/
 
             // Check if fire is extinguished early
-            //we can implment here fire severity
-            //then also proceed to ClosingNozzleState
-
+            // we can implement here fire severity
+            // then also proceed to ClosingNozzleState
 
             // Simulate time delay for agent release
             try {
@@ -64,11 +63,10 @@ public class DroppingAgentState implements DroneStates{
                 Thread.currentThread().interrupt();
                 break;
             }
-            droneSubsystem.RequestStateChange(droneSubsystem, drone);
+            //droneSubsystem.RequestStateChange(droneSubsystem, drone);
             DroneStates newState = drone.getState();
             if(newState instanceof ClosingNozzleState){
                 droneSubsystem.nozzleClosed(drone.getDroneID());
-
             } else {
                 continue;
             }
@@ -81,9 +79,6 @@ public class DroppingAgentState implements DroneStates{
             droneSubsystem.nozzleClosed(drone.getDroneID());
         }
     }
-
-
-
 
     @Override
     public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {
