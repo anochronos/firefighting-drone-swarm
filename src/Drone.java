@@ -66,7 +66,9 @@ public class Drone {
             // Check if the drone is near the destination
             if (getCurrent_X() > getDestination_X()*0.8 &&
                     getCurrent_Y() > getDestination_Y()*0.8) {
-                this.setState(new ApproachingDestinationState());
+                droneSubsystem.RequestStateChange(droneSubsystem, this);
+                //since the scheduler has already set our state to ApproachingDestinationState
+                //this.setState(new ApproachingDestinationState());
                 reachedNearDestination(droneSubsystem);
             }
         }
@@ -76,7 +78,7 @@ public class Drone {
             if (Math.abs(getCurrent_X() - getDestination_X()) < 1 &&
                     Math.abs(getCurrent_Y() - getDestination_Y()) < 1) {
                 //System.out.println("Drone " + droneID + " has arrived at the exact destination.");
-                reachedNearDestination(droneSubsystem);
+                reachedDestination(droneSubsystem);
             }
         }
         if (currentState instanceof OpeningNozzleState) {
@@ -94,9 +96,14 @@ public class Drone {
 
     public void reachedNearDestination(DroneSubsystem droneSubsystem) {
         System.out.println("Drone " + droneID + " has reached near its destination.");
-        currentState.reachedNearDestination(droneSubsystem, this);
+        currentState.realTimeUpdateOfDroneLocation(droneSubsystem, this);
+        //currentState.reachedNearDestination(droneSubsystem, this);
     }
 
+    public void reachedDestination(DroneSubsystem droneSubsystem){
+        System.out.println("Drone " + droneID + " has reached  its destination.");
+        currentState.reachedDestination(droneSubsystem, this);
+    }
     public void beginAgentDropPreparation(DroneSubsystem droneSubsystem) {
         currentState.prepareForAgentRelease(droneSubsystem, this);
     }

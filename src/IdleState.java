@@ -23,6 +23,11 @@ public class IdleState implements DroneStates {
     }
 
     @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+
+    }
+
+    @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
 
     }

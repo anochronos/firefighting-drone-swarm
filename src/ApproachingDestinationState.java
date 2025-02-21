@@ -40,11 +40,21 @@ public class ApproachingDestinationState implements DroneStates{
 
     @Override
     public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {
-        System.out.println("Drone " + drone.getDroneID() + " has fully reached the destination.");
+        //System.out.println("Drone " + drone.getDroneID() + " has fully reached the destination.");
 
         // Transition to the next state (OpeningNozzleState)
-        drone.setState(new OpeningNozzleState());
-        drone.checkForStateTransition(droneSubsystem);
+        //drone.setState(new OpeningNozzleState());
+        //drone.checkForStateTransition(droneSubsystem);
+    }
+
+    @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+        System.out.println("Drone " + drone.getDroneID() + " has fully reached the destination.");
+        //request transition to next state from scheduler.
+        droneSubsystem.RequestStateChange(droneSubsystem, drone);
+        droneSubsystem.beginAgentDropPreparation(drone.getDroneID());
+
+
     }
 
 

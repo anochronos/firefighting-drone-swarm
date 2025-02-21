@@ -15,6 +15,11 @@ public class DroppingAgentState implements DroneStates{
     }
 
     @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+
+    }
+
+    @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
 
     }
@@ -30,6 +35,7 @@ public class DroppingAgentState implements DroneStates{
 
         System.out.println("Drone " + drone.getDroneID() + " has started dropping agent.");
 
+
         while (waterLevel > 0 && drone.getState() instanceof DroppingAgentState) {
             System.out.println("Current water tank level for Drone " + drone.getDroneID() + ": " + waterLevel);
 
@@ -38,13 +44,13 @@ public class DroppingAgentState implements DroneStates{
             drone.setWaterTanklvl(waterLevel);
 
             //Check for faults
-            /**boolean pumpFailure = Math.random() < 0.01;
+            boolean pumpFailure = Math.random() < 0.01;
             if (pumpFailure) {
                 System.out.println("Drone " + drone.getDroneID() + " encountered a failure! Transitioning to FaultDetectedState...");
                 drone.setState(new FaultDetectedState());
                 drone.getState().faultDetected(droneSubsystem, drone, "PUMP_FAILURE");
                 return;
-            }**/
+            }
 
             // Check if fire is extinguished early
             //we can implment here fire severity
@@ -58,13 +64,21 @@ public class DroppingAgentState implements DroneStates{
                 Thread.currentThread().interrupt();
                 break;
             }
+            droneSubsystem.RequestStateChange(droneSubsystem, drone);
+            DroneStates newState = drone.getState();
+            if(newState instanceof ClosingNozzleState){
+                droneSubsystem.nozzleClosed(drone.getDroneID());
+
+            } else {
+                continue;
+            }
         }
 
         //tank is empty, transition to `ClosingNozzleState`
         if (waterLevel <= 0) {
             System.out.println("Drone " + drone.getDroneID() + " has emptied its water tank. Closing nozzle...");
             drone.setState(new ClosingNozzleState());
-            drone.nozzleClosed(droneSubsystem);
+            droneSubsystem.nozzleClosed(drone.getDroneID());
         }
     }
 

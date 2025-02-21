@@ -107,6 +107,12 @@ public class DroneSubsystem implements Runnable{
         }
     }
 
+    //A way to send notification to scheduler that a drone is approaching and need to change its state to approachingDestinaitonState
+    public void RequestStateChange(DroneSubsystem droneSubsystem, Drone drone){
+        //A method to call schedulers side
+    }
+
+
     /**
      * Runs the drone thread, which receives fire incident tickets from the scheduler
      * and sends a message back once the task has been completed.

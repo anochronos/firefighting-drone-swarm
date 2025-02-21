@@ -15,6 +15,11 @@ public class FaultDetectedState implements DroneStates{
     }
 
     @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+
+    }
+
+    @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
 
     }
@@ -36,6 +41,9 @@ public class FaultDetectedState implements DroneStates{
 
     @Override
     public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {
+        System.out.println("Fault occured, chaning state to return to base.");
+        drone.setState(new ReturningToBaseState());
+        droneSubsystem.returnToBase(drone.getDroneID());
 
     }
 

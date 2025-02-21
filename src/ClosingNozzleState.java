@@ -15,6 +15,11 @@ public class ClosingNozzleState implements DroneStates{
     }
 
     @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+
+    }
+
+    @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
 
     }
@@ -42,20 +47,23 @@ public class ClosingNozzleState implements DroneStates{
         }
 
         // Simulating  nozzle jam 1% prob
-        /**boolean nozzleJam = Math.random() < 0.01;
+        boolean nozzleJam = Math.random() < 0.01;
         if (nozzleJam) {
             System.out.println("Nozzle jammed while closing on Drone " + drone.getDroneID() + "! Transitioning to FaultDetectedState...");
             drone.setState(new FaultDetectedState());
             drone.faultDetected(droneSubsystem, "NOZZLE_JAM");
             return;
-        }**/
+        }
 
         //closed
         System.out.println("Nozzle successfully closed for Drone " + drone.getDroneID());
 
+        //for future iterations we can implment here if we want the drone to pass by another firezone, not necessarly to Base.
+        //by droneSubsystem.RequestStateChange();
+
         //Transition to `ReturningToBaseState`
         drone.setState(new ReturningToBaseState());
-        drone.returnToBase(droneSubsystem);
+        droneSubsystem.returnToBase(drone.getDroneID());
     }
 
 

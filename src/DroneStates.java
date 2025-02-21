@@ -2,6 +2,7 @@ public interface DroneStates {
     void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone);
     void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone);
     void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone);
+    void reachedDestination(DroneSubsystem droneSubsystem, Drone drone);
 
     void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone);
 

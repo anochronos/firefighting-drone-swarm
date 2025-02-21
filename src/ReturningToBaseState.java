@@ -15,6 +15,11 @@ public class ReturningToBaseState implements DroneStates{
     }
 
     @Override
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
+
+    }
+
+    @Override
     public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
 
     }
@@ -60,7 +65,7 @@ public class ReturningToBaseState implements DroneStates{
             //we could add fault, but since wer returning to base and for simplicity i didnt include it.
 
             try {
-                Thread.sleep(500); //diplaydelay
+                Thread.sleep(400); //diplaydelay
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
@@ -76,6 +81,8 @@ public class ReturningToBaseState implements DroneStates{
     @Override
     public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {
         System.out.println("Drone " + drone.getDroneID() + " has arrived at the base.");
+        //for simplicity, automatically set to idle
+        //we have to reset the drones fields.
         drone.setState(new IdleState());
 
     }
