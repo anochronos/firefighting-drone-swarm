@@ -1,39 +1,37 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FireIncidentSubsystemTest {
-    private Scheduler scheduler;
+public class FireIncidentSubsystemTest {
+
+    private Scheduler testScheduler;
     private FireIncidentSubsystem fireIncidentSubsystem;
-    private HashMap<Integer, Zone> zones;
+    private DroneSubsystem droneSubsystem;
 
     @BeforeEach
     void setUp() {
-        scheduler = new Scheduler();
-        fireIncidentSubsystem = new FireIncidentSubsystem(scheduler);
-        zones = new HashMap<>();
-
-        // Creating a real zone instance
-        zones.put(1, new Zone(1, Map.entry(0, 0), Map.entry(100, 100)));
+        testScheduler = new Scheduler();
+        fireIncidentSubsystem = new FireIncidentSubsystem(testScheduler);
+        droneSubsystem = new DroneSubsystem(testScheduler);
     }
 
     @Test
-    void testParseCoordinates() {
-        Map.Entry<Integer, Integer> coordinates = FireIncidentSubsystem.parseCoordinates("(10;20)");
-        assertEquals(10, coordinates.getKey(), "X coordinate should be 10");
-        assertEquals(20, coordinates.getValue(), "Y coordinate should be 20");
-    }
+    void testFireIncidentSubsystemReadsAndSendsRequests() {
+        Thread fireIncidentThread = new Thread(fireIncidentSubsystem);
+        Thread droneSubsystemThread = new Thread(droneSubsystem);
+        fireIncidentThread.start();
+        droneSubsystemThread.start();
 
-    @Test
-    void testReceiveRequestFromFireSystem() {
-        FireIncidentTicket ticket = new FireIncidentTicket("12:00", 1, "Fire", "High");
-        scheduler.receiveRequestFromFiresystem(ticket, zones, 1);
-        FireIncidentTicket completedTicket = scheduler.completeFiresystemRequest();
+        // Wait for the thread to complete execution
+        try {
+            fireIncidentThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
-        assertNotNull(completedTicket, "Completed ticket should not be null");
+        // Verify that requests are processed
+        assertTrue(testScheduler.getRequestsCompleted() > 0, "Scheduler should have processed at least one request");
     }
 }

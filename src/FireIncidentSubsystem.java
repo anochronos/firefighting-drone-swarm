@@ -81,6 +81,6 @@ public class FireIncidentSubsystem implements Runnable {
         } catch (FileNotFoundException e) {
             System.err.println("Event file not found: " + e.getMessage());
         }
-        System.exit(0);
+        //System.exit(0);
     }
 }

@@ -25,5 +25,12 @@ public class Main {
         // Start both subsystems
         fireSubsystem.start();
         droneSubsystem.start();
+
+        try {
+            fireSubsystem.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.exit(0);
     }
 }
