@@ -1,38 +1,24 @@
 public class ClosingNozzleState implements DroneStates{
     @Override
-    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
     public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {
@@ -58,29 +44,19 @@ public class ClosingNozzleState implements DroneStates{
         //closed
         System.out.println("Nozzle successfully closed for Drone " + drone.getDroneID());
 
-        //for future iterations we can implment here if we want the drone to pass by another firezone, not necessarly to Base.
+        //for future iterations we can implement here if we want the drone to pass by another fireZone, not necessarily to Base.
         //by droneSubsystem.RequestStateChange();
 
         //Transition to `ReturningToBaseState`
-        drone.setState(new ReturningToBaseState());
         droneSubsystem.returnToBase(drone.getDroneID());
     }
 
-
-
+    @Override
+    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {}
 
     @Override
-    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {
-
-    }
+    public void returnToBase(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void returnToBase(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
-
-    @Override
-    public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {}
 }

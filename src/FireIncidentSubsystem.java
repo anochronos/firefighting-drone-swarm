@@ -14,7 +14,7 @@ public class FireIncidentSubsystem implements Runnable {
 
     Scheduler scheduler;
     FireIncidentTicket completedTicket;
-    HashMap<Integer, Zone> zones = new HashMap<>();
+    private HashMap<Integer, Zone> zones = new HashMap<>();
 
     /**
      * Reads the event file into an ArrayList.
@@ -74,7 +74,7 @@ public class FireIncidentSubsystem implements Runnable {
 
                 System.out.println("Fire Incident Subsystem: Finished Parsing CSV event file");
                 System.out.println("Fire Incident Subsystem: Sent request to the scheduler");
-                scheduler.receiveRequestFromFiresystem(eventTicket);
+                scheduler.receiveRequestFromFiresystem(eventTicket, zones, zones.get(1).zoneID());
                 completedTicket = scheduler.completeFiresystemRequest();
                 System.out.println("Fire Incident Subsystem: Received completed ticket from scheduler\n\n");
             }

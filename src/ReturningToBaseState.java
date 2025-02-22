@@ -1,48 +1,30 @@
 public class ReturningToBaseState implements DroneStates{
     @Override
-    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {
-
-    }
+    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {}
 
     @Override
     public void returnToBase(DroneSubsystem droneSubsystem, Drone drone) {
@@ -73,7 +55,6 @@ public class ReturningToBaseState implements DroneStates{
         drone.arrivedAtBase(droneSubsystem);
     }
 
-
     @Override
     public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {
         // Show proof of battery usage
@@ -83,6 +64,5 @@ public class ReturningToBaseState implements DroneStates{
         drone.setBattery(100);
         drone.setWaterTanklvl(10.0);
         drone.setState(new IdleState());
-
     }
 }

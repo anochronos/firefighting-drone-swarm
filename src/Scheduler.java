@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,6 +15,8 @@ public class Scheduler{
     FireIncidentTicket currentTicket;
     FireIncidentTicket completedTicket;
     private final DroneSubsystem droneSubsystem;
+    private HashMap<Integer, Zone> zones = new HashMap<>();
+    private int zoneID;
 
     /**
      * Constructor for scheduler class
@@ -47,7 +50,7 @@ public class Scheduler{
      *
      * @param request The fire incident ticket to be processed.
      */
-    public synchronized void receiveRequestFromFiresystem(FireIncidentTicket request) {
+    public synchronized void receiveRequestFromFiresystem(FireIncidentTicket request, HashMap<Integer,Zone> zone, int ID) {
         while (requestAvailable) {
             try {
                 wait();
@@ -55,6 +58,8 @@ public class Scheduler{
                 Thread.currentThread().interrupt();
             }
         }
+        zones = zone;
+        zoneID = ID;
         System.out.println("Scheduler in State 'Receiving Request from FireIncidentSubsystem'");
         currentTicket = request;
         System.out.println("Scheduler: Received request from the fire incident system");
@@ -191,7 +196,7 @@ public class Scheduler{
      * @param coordinates of the fire to be handled
      * @return coordinates of the fire
      */
-    private Map.Entry<Integer, Integer> validateCoordinates(Map.Entry<Integer, Integer> coordinates) {
+    Map.Entry<Integer, Integer> validateCoordinates(Map.Entry<Integer, Integer> coordinates) {
         int x = coordinates.getKey();
         int y = coordinates.getValue();
 
@@ -201,9 +206,23 @@ public class Scheduler{
         }
         if (coordinates.getValue() < 0) {
             System.out.println("Scheduler: Negative Y coordinates received. Converting to positive");
-            y = Math.abs(coordinates.getKey());
+            y = Math.abs(coordinates.getValue());
+        }
+        for (Zone zones: zones.values()) {
+            if (zones.zoneID() == zoneID) {
+                if (coordinates.getKey() < zones.getZoneStart().getKey() || coordinates.getKey() > zones.getZoneEnd().getKey()) {
+                    System.out.println("Scheduler: Zone " + zoneID + " x-coordinates is out of bounds");
+                    System.out.println("Setting to center of zone");
+                    x = zones.getZoneCenter().getKey();
+                }
+                if (coordinates.getValue() < zones.getZoneStart().getValue() || coordinates.getValue() > zones.getZoneEnd().getValue()) {
+                    System.out.println("Scheduler: Zone " + zoneID + " y-coordinates is out of bounds");
+                    System.out.println("Setting to center of zone");
+                    y = zones.getZoneCenter().getValue();
+                }
+            }
         }
         return Map.entry(x, y);
     }
-    
+
 }

@@ -1,8 +1,6 @@
 public class ApproachingDestinationState implements DroneStates{
     @Override
-    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void startingDispatchToDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
     public void realTimeUpdateOfDroneLocation(DroneSubsystem droneSubsystem, Drone drone) {
@@ -41,11 +39,7 @@ public class ApproachingDestinationState implements DroneStates{
     }
 
     @Override
-    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {
-        // Transition to the next state (OpeningNozzleState)
-        //drone.setState(new OpeningNozzleState());
-        //drone.checkForStateTransition(droneSubsystem);
-    }
+    public void reachedNearDestination(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
     public void reachedDestination(DroneSubsystem droneSubsystem, Drone drone) {
@@ -55,39 +49,24 @@ public class ApproachingDestinationState implements DroneStates{
         droneSubsystem.beginAgentDropPreparation(drone.getDroneID());
     }
 
+    @Override
+    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void prepareForAgentRelease(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void nozzleOpened(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void droppingAgent(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void nozzleClosed(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {}
 
     @Override
-    public void faultDetected(DroneSubsystem droneSubsystem, Drone drone, String fault) {
-
-    }
+    public void returnToBase(DroneSubsystem droneSubsystem, Drone drone) {}
 
     @Override
-    public void returnToBase(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
-
-    @Override
-    public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {
-
-    }
+    public void arrivedAtBase(DroneSubsystem droneSubsystem, Drone drone) {}
 }

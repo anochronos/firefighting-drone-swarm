@@ -1,4 +1,3 @@
-import java.util.AbstractMap;
 import java.util.Map;
 
 public class Drone {
@@ -27,29 +26,27 @@ public class Drone {
         current_Y = 0.0;
     }
 
-
+    /**
+     * Display assigned coordinates of a fire for a drone
+     * @param x coordinate
+     * @param y coordinate
+     */
     public void assignCoordinates(double x, double y) {
         destination_X = x;
         destination_Y = y;
         System.out.println("Drone " + droneID + " assigned to mission at center (" + destination_X + ", " + destination_Y + ")");
     }
 
-
     public void setState(DroneStates newState) {
         this.currentState = newState;
         System.out.println("Drone " + droneID + " transitioned to " + newState.getClass().getSimpleName());
     }
 
-
-
     public void startFlightToDestination(DroneSubsystem droneSubsystem) {
+        // At this point state is IdleState
         currentState.startingDispatchToDestination(droneSubsystem, this);
-        if (currentState instanceof EnRouteState) {
-            currentState.realTimeUpdateOfDroneLocation(droneSubsystem,this);
-        } else {
-            System.out.println("Drone " + droneID + " did not enter EnRouteState. Real-time update canceled.");
-        }
-
+        this.setState(new EnRouteState());
+        currentState.realTimeUpdateOfDroneLocation(droneSubsystem,this);
     }
 
     public void checkForStateTransition(DroneSubsystem droneSubsystem) {
@@ -91,7 +88,6 @@ public class Drone {
         }
     }
 
-
     public void reachedNearDestination(DroneSubsystem droneSubsystem) {
         System.out.println("Drone " + droneID + " is nearing its destination.");
         this.setState(new ApproachingDestinationState());
@@ -116,11 +112,14 @@ public class Drone {
     }
 
     public void startingAgentDispensing(DroneSubsystem droneSubsystem) {
-        // At this point state is DroppingAgentState
+        // At this point state is OpeningNozzleState
+        this.setState(new DroppingAgentState());
         currentState.droppingAgent(droneSubsystem, this);
     }
 
     public void nozzleClosed(DroneSubsystem droneSubsystem) {
+        // At this point state is DroppingAgentState
+        this.setState(new ClosingNozzleState());
         currentState.nozzleClosed(droneSubsystem, this);
     }
 
@@ -129,6 +128,8 @@ public class Drone {
     }
 
     public void returnToBase(DroneSubsystem droneSubsystem) {
+        // At this point state is ClosingNozzleState
+        this.setState(new ReturningToBaseState());
         currentState.returnToBase(droneSubsystem, this);
     }
 
@@ -148,11 +149,11 @@ public class Drone {
     public DroneStates getState() { return currentState; }
 
     public Map.Entry<Integer, Integer> getCoordinates() {
-        return new AbstractMap.SimpleEntry<>((int) destination_X, (int) destination_Y);
+        return Map.entry((int) destination_X, (int) destination_Y);
     }
 
     public Map.Entry<Integer, Integer> getCurrentLocation() {
-        return new AbstractMap.SimpleEntry<>((int) current_X, (int) current_Y);
+        return Map.entry((int) current_X, (int) current_Y);
     }
 
     public double getDestination_X() {

@@ -8,6 +8,10 @@ public record Zone(int zoneID, Map.Entry<Integer,Integer> zoneStart, Map.Entry<I
         return Map.entry(centerX, centerY);
     }
 
+    public Map.Entry<Integer, Integer> getZoneStart() { return zoneStart; }
+
+    public Map.Entry<Integer, Integer> getZoneEnd() { return zoneEnd; }
+
     /**
      * Returns a string representation of the fire zone.
      *

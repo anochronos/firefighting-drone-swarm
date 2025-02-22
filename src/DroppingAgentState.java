@@ -75,7 +75,6 @@ public class DroppingAgentState implements DroneStates{
         //tank is empty, transition to `ClosingNozzleState`
         if (waterLevel <= 0) {
             System.out.println("Drone " + drone.getDroneID() + " has emptied its water tank. Closing nozzle...");
-            drone.setState(new ClosingNozzleState());
             droneSubsystem.nozzleClosed(drone.getDroneID());
         }
     }
