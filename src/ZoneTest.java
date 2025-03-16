@@ -6,10 +6,18 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The `ZoneTest` class contains unit tests for the `Zone` class and the `Scheduler`'s coordinate validation logic.
+ * It tests the handling of negative coordinates, out-of-bounds coordinates, and valid coordinates within a zone.
+ */
 class ZoneTest {
     private Scheduler scheduler;
     private HashMap<Integer, Zone> zones;
 
+    /**
+     * Sets up the test environment before each test case.
+     * Initializes the `Scheduler` and a `Zone` with specific boundaries for testing.
+     */
     @BeforeEach
     void setUp() {
         scheduler = new Scheduler();
